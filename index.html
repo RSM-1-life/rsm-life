@@ -727,35 +727,43 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
 <div class="page" id="page-deposit">
   <div class="topnav"><button class="menu-btn" onclick="_sb(1)">☰</button><div class="topnav-title">💳 ডিপোজিট</div><div></div></div>
   <div class="page-body">
-    <!-- deposit status -->
-    <div id="dep-success-box" style="display:none;text-align:center;padding:32px 16px">
-      <div style="font-size:64px;margin-bottom:16px">🎉</div>
-      <div style="font-size:24px;font-weight:800;background:linear-gradient(135deg,#10B981,#34D399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px">অভিনন্দন!</div>
-      <div style="font-size:14px;color:#34D399;font-weight:700;margin-bottom:6px">আপনার ডিপোজিট অনুমোদিত হয়েছে!</div>
-      <div style="font-size:12px;color:#475569">ব্যালেন্স আপডেট হয়েছে</div>
+    <!-- সদস্য ফি নোটিশ -->
+    <div style="background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(245,158,11,.06));border:1px solid rgba(251,191,36,.3);border-radius:14px;padding:13px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+      <div style="font-size:26px">💰</div>
+      <div>
+        <div style="font-size:13px;font-weight:800;color:#FBBF24" id="dep-fee-amount">সদস্য ফি: ৳১০০০ টাকা</div>
+        <div style="font-size:11px;color:#92400E;margin-top:2px" id="dep-fee-sub">সদস্যপদ পেতে ৳১০০০ টাকা পাঠান</div>
+      </div>
     </div>
-    <div id="dep-pending-box" style="display:none;text-align:center;padding:28px 16px">
-      <div style="font-size:56px;margin-bottom:14px">⏳</div>
-      <div style="font-size:18px;font-weight:800;color:#FBBF24;margin-bottom:8px">অপেক্ষা করুন</div>
-      <div style="font-size:12px;color:#475569;line-height:1.6">আপনার ডিপোজিট রিকোয়েস্ট পাঠানো হয়েছে।<br/>অ্যাডমিন অনুমোদন দেওয়ার পর ব্যালেন্স যোগ হবে।</div>
+    <!-- deposit status -->
+    <div id="dep-success-box" style="display:none;text-align:center;padding:40px 16px">
+      <div style="font-size:72px;margin-bottom:18px">🎉</div>
+      <div style="font-size:26px;font-weight:800;background:linear-gradient(135deg,#10B981,#34D399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px">অভিনন্দন!</div>
+      <div style="font-size:16px;color:#34D399;font-weight:700;margin-bottom:8px">আপনার ডিপোজিট সম্পন্ন হয়েছে।</div>
+      <div style="font-size:12px;color:#475569;line-height:1.6">আপনার ব্যালেন্স আপডেট হয়েছে।</div>
+    </div>
+    <div id="dep-pending-box" style="display:none;text-align:center;padding:40px 16px">
+      <div style="font-size:64px;margin-bottom:18px">⏳</div>
+      <div style="font-size:20px;font-weight:800;color:#FBBF24;margin-bottom:10px">অনুগ্রহ করে অপেক্ষা করুন</div>
+      <div style="font-size:12px;color:#475569;line-height:1.8">আপনার ডিপোজিট রিকোয়েস্ট পাঠানো হয়েছে।<br/>অ্যাডমিন অনুমোদন দেওয়ার পর ব্যালেন্স যোগ হবে।</div>
     </div>
     <div id="dep-form-box">
       <div class="card">
         <div class="sttl">💳 ডিপোজিট করুন</div>
         <div id="dep-msg" class="msg"></div>
-        <!-- পেমেন্ট পদ্ধতি কার্ড -->
+        <!-- ক্যাশ আউট অপশন কার্ড -->
         <div id="dep-method-cards"><div class="loader"><div class="spin"></div></div></div>
         <!-- সিলেক্ট করা পদ্ধতির নম্বর -->
         <div id="dep-selected-info" style="display:none;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:14px;margin-bottom:14px;text-align:center">
           <div style="font-size:11px;font-weight:800;color:#34D399;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px" id="dep-target-method">নির্বাচিত পদ্ধতি</div>
           <div style="font-size:22px;font-weight:800;color:#E2E8F0;font-family:monospace;letter-spacing:2px" id="dep-target-num">—</div>
-          <div style="font-size:11px;color:#64748B;margin-top:4px">এই নম্বরে টাকা পাঠান</div>
+          <div style="font-size:11px;color:#64748B;margin-top:4px">এই নম্বরে ৳<span id="dep-send-amt">১০০০</span> টাকা পাঠান</div>
         </div>
         <!-- ফর্ম ফিল্ড -->
         <div id="dep-fields" style="display:none">
           <input type="hidden" id="dep-method" value=""/>
           <label>পরিমাণ (টাকা)</label>
-          <input type="number" id="dep-amount" placeholder="কত টাকা পাঠাচ্ছেন?" min="100"/>
+          <input type="number" id="dep-amount" placeholder="১০০০ টাকা লিখুন" value="1000" min="1000" max="1000"/>
           <label>আপনার মোবাইল নম্বর (যেটা থেকে পাঠিয়েছেন)</label>
           <input type="tel" id="dep-mobile" placeholder="01XXXXXXXXX" maxlength="11"/>
           <label>ট্রানজেকশন আইডি</label>
@@ -1250,11 +1258,9 @@ async function _register() {
       createdAt:FV.serverTimestamp(),
     });
     if(_refUID) await _db.collection('users').doc(_refUID).update({referralCount:FV.increment(1)});
-    _msgEl(m,'💰 কমিশন বিতরণ হচ্ছে...','ok');
-    await _distributeCommission(cred.user.uid, referredBy);
-    _msgEl(m,'🎉 অ্যাকাউন্ট তৈরি হয়েছে! হোমে যাচ্ছি...','ok');
+    _msgEl(m,'🎉 অ্যাকাউন্ট তৈরি হয়েছে! ডিপোজিট করুন এবং সদস্যপদ সক্রিয় করুন।','ok');
     _registering=false;
-    setTimeout(()=>_navTo('home'), 800);
+    setTimeout(()=>_navTo('deposit'), 800);
   } catch(err) {
     _registering=false; btn.disabled=false; _newCap();
     const c={'auth/email-already-in-use':'এই ইমেইল ইতিমধ্যে ব্যবহৃত','auth/invalid-email':'ইমেইল সঠিক নয়','auth/weak-password':'পাসওয়ার্ড খুব দুর্বল'};
@@ -1872,6 +1878,24 @@ function _saveRemember(){
 /* ══ DEPOSIT ══ */
 let _allDep=[], _depFilter='pending';
 async function _loadDeposit(){
+  // Load registration fee dynamically from Firebase
+  let _depFee = 1000;
+  try{
+    const feeSnap=await _db.collection('config').doc('commission').get();
+    if(feeSnap.exists){const fd=feeSnap.data();if(fd.regFee)_depFee=fd.regFee;}
+  }catch(e){}
+  // Update fee display on page
+  const feeEl=document.getElementById('dep-fee-amount');
+  if(feeEl)feeEl.textContent=`সদস্য ফি: ৳${_depFee.toLocaleString()} টাকা`;
+  const feeSubEl=document.getElementById('dep-fee-sub');
+  if(feeSubEl)feeSubEl.textContent=`সদস্যপদ পেতে ৳${_depFee.toLocaleString()} টাকা পাঠান`;
+  // Update amount input
+  const amtEl=document.getElementById('dep-amount');
+  if(amtEl){amtEl.value=_depFee;amtEl.min=_depFee;amtEl.max=_depFee;}
+  // Store fee for validation
+  window._currentDepFee=_depFee;
+  const sendAmtEl=document.getElementById('dep-send-amt');
+  if(sendAmtEl)sendAmtEl.textContent=_depFee.toLocaleString();
   // Load payment numbers dynamically
   try{
     const snap=await _db.collection('config').doc('paymentnumbers').get();
@@ -1885,7 +1909,7 @@ async function _loadDeposit(){
     if(!methods.length){
       cardsEl.innerHTML='<div style="text-align:center;color:#F87171;font-size:12px;padding:12px">এখন কোনো পেমেন্ট পদ্ধতি খোলা নেই</div>';
     } else {
-      cardsEl.innerHTML='<div style="font-size:11px;color:#64748B;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px">পেমেন্ট পদ্ধতি বেছে নিন</div>'+
+      cardsEl.innerHTML='<div style="font-size:11px;color:#64748B;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px">ক্যাশ আউট অপশন বেছে নিন</div>'+
         methods.map(m=>`<div onclick="_selectDepMethod('${m.key}','${m.num}','${m.label}','${m.icon}')" style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all .2s" id="dep-card-${m.key}">
           <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${m.icon}</div>
           <div style="flex:1"><div style="font-size:14px;font-weight:800">${m.label}</div><div style="font-size:12px;color:#64748B;margin-top:2px;font-family:monospace">${m.num}</div></div>
@@ -1952,8 +1976,9 @@ async function _submitDeposit(){
   const mobile=document.getElementById('dep-mobile').value.trim();
   const txid=document.getElementById('dep-txid').value.trim();
   const m=document.getElementById('dep-msg');
+  const fee=window._currentDepFee||1000;
   if(!method)return _msgEl(m,'পেমেন্ট পদ্ধতি বেছে নিন','er');
-  if(!amount||amount<100)return _msgEl(m,'কমপক্ষে ১০০ টাকা দিন','er');
+  if(!amount||amount!==fee)return _msgEl(m,`শুধুমাত্র ৳${fee} টাকাই দেওয়া যাবে`,'er');
   if(!mobile||mobile.length<11)return _msgEl(m,'সঠিক মোবাইল নম্বর দিন','er');
   if(!txid)return _msgEl(m,'ট্রানজেকশন আইডি দিন','er');
   const btn=document.getElementById('btn-dep');
@@ -1963,10 +1988,11 @@ async function _submitDeposit(){
       uid:_u.uid,name:_ud.name||'',mobile,method,amount,txid,
       status:'pending',createdAt:FV.serverTimestamp()
     });
-    _msgEl(m,'✅ রিকোয়েস্ট পাঠানো হয়েছে! অ্যাডমিন অনুমোদনের অপেক্ষা করুন।','ok');
-    setTimeout(()=>_loadDeposit(),1500);
-  }catch(e){_msgEl(m,'সমস্যা: '+e.message,'er');}
-  btn.disabled=false;btn.textContent='💳 ডিপোজিট রিকোয়েস্ট পাঠান';
+    // সাথে সাথে pending box দেখাও
+    document.getElementById('dep-form-box').style.display='none';
+    document.getElementById('dep-success-box').style.display='none';
+    document.getElementById('dep-pending-box').style.display='block';
+  }catch(e){_msgEl(m,'সমস্যা: '+e.message,'er');btn.disabled=false;btn.textContent='💳 ডিপোজিট রিকোয়েস্ট পাঠান';}
 }
 
 /* ══ ADMIN DEPOSIT ══ */
@@ -2005,14 +2031,13 @@ async function _approveDep(id,uid,amount){
     // 1. Mark deposit approved
     const batch=_db.batch();
     batch.update(_db.collection('deposits').doc(id),{status:'approved',approvedAt:FV.serverTimestamp()});
-    // 2. Add balance to user
+    // 2. Notify user (balance যোগ হবে না — commission বিতরণে হবে)
     if(uid){
-      batch.update(_db.collection('users').doc(uid),{balance:FV.increment(amount)});
-      batch.set(_db.collection('users').doc(uid).collection('notifications').doc(),{icon:'💳',title:'ডিপোজিট অনুমোদিত!',message:`আপনার ৳${amount} ডিপোজিট অনুমোদিত হয়েছে।`,type:'deposit_approved',read:false,time:FV.serverTimestamp()});
-      batch.set(_db.collection('users').doc(uid).collection('activity').doc(),{icon:'💳',title:`ডিপোজিট — ৳${amount}`,amount:amount,type:'deposit',time:FV.serverTimestamp()});
+      batch.set(_db.collection('users').doc(uid).collection('notifications').doc(),{icon:'💳',title:'ডিপোজিট অনুমোদিত!',message:`আপনার ৳${amount} ডিপোজিট সম্পন্ন হয়েছে। কমিশন বিতরণ হচ্ছে।`,type:'deposit_approved',read:false,time:FV.serverTimestamp()});
+      batch.set(_db.collection('users').doc(uid).collection('activity').doc(),{icon:'💳',title:`ডিপোজিট সম্পন্ন — ৳${amount}`,amount:amount,type:'deposit',time:FV.serverTimestamp()});
     }
     await batch.commit();
-    // 3. Distribute commission to upline
+    // 3. Distribute commission to upline + admin (deposit amount থেকে)
     if(uid) await _distributeDepositCommission(uid, amount);
     const idx=_allDep.findIndex(d=>d.id===id);if(idx>=0)_allDep[idx].status='approved';
     _renderDep();_toast('✅ ডিপোজিট অনুমোদিত + কমিশন বিতরণ হয়েছে!');

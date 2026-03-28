@@ -743,34 +743,25 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
       <div class="card">
         <div class="sttl">💳 ডিপোজিট করুন</div>
         <div id="dep-msg" class="msg"></div>
-        <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:14px;padding:14px;margin-bottom:14px">
-          <div style="font-size:11px;font-weight:800;color:#60A5FA;margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px">📱 পেমেন্ট নম্বর</div>
-          <div id="dep-bkash-num" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
-            <span style="font-size:12px;color:#64748B;font-weight:600">🟣 বিকাশ</span>
-            <span style="font-size:13px;font-weight:700;color:#E2E8F0" id="dep-bkash-val">লোড হচ্ছে...</span>
-          </div>
-          <div id="dep-nagad-num" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
-            <span style="font-size:12px;color:#64748B;font-weight:600">🟠 নগদ</span>
-            <span style="font-size:13px;font-weight:700;color:#E2E8F0" id="dep-nagad-val">লোড হচ্ছে...</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
-            <span style="font-size:12px;color:#64748B;font-weight:600">🔵 রকেট</span>
-            <span style="font-size:13px;font-weight:700;color:#E2E8F0" id="dep-rocket-val">লোড হচ্ছে...</span>
-          </div>
+        <!-- পেমেন্ট পদ্ধতি কার্ড -->
+        <div id="dep-method-cards"><div class="loader"><div class="spin"></div></div></div>
+        <!-- সিলেক্ট করা পদ্ধতির নম্বর -->
+        <div id="dep-selected-info" style="display:none;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:14px;margin-bottom:14px;text-align:center">
+          <div style="font-size:11px;font-weight:800;color:#34D399;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px" id="dep-target-method">নির্বাচিত পদ্ধতি</div>
+          <div style="font-size:22px;font-weight:800;color:#E2E8F0;font-family:monospace;letter-spacing:2px" id="dep-target-num">—</div>
+          <div style="font-size:11px;color:#64748B;margin-top:4px">এই নম্বরে টাকা পাঠান</div>
         </div>
-        <label>পেমেন্ট পদ্ধতি</label>
-        <select id="dep-method" style="margin-bottom:10px">
-          <option value="bkash">🟣 বিকাশ</option>
-          <option value="nagad">🟠 নগদ</option>
-          <option value="rocket">🔵 রকেট</option>
-        </select>
-        <label>পরিমাণ (টাকা)</label>
-        <input type="number" id="dep-amount" placeholder="কত টাকা পাঠাচ্ছেন?" min="100"/>
-        <label>আপনার মোবাইল নম্বর (যেটা থেকে পাঠিয়েছেন)</label>
-        <input type="tel" id="dep-mobile" placeholder="01XXXXXXXXX" maxlength="11"/>
-        <label>ট্রানজেকশন আইডি</label>
-        <input type="text" id="dep-txid" placeholder="TrxID বা রেফারেন্স নম্বর"/>
-        <button class="btn btn-blue" id="btn-dep" onclick="_submitDeposit()">💳 ডিপোজিট রিকোয়েস্ট পাঠান</button>
+        <!-- ফর্ম ফিল্ড -->
+        <div id="dep-fields" style="display:none">
+          <input type="hidden" id="dep-method" value=""/>
+          <label>পরিমাণ (টাকা)</label>
+          <input type="number" id="dep-amount" placeholder="কত টাকা পাঠাচ্ছেন?" min="100"/>
+          <label>আপনার মোবাইল নম্বর (যেটা থেকে পাঠিয়েছেন)</label>
+          <input type="tel" id="dep-mobile" placeholder="01XXXXXXXXX" maxlength="11"/>
+          <label>ট্রানজেকশন আইডি</label>
+          <input type="text" id="dep-txid" placeholder="TrxID বা রেফারেন্স নম্বর"/>
+          <button class="btn btn-blue" id="btn-dep" onclick="_submitDeposit()">💳 ডিপোজিট রিকোয়েস্ট পাঠান</button>
+        </div>
       </div>
       <div class="card">
         <div class="sttl">📋 ডিপোজিট ইতিহাস</div>
@@ -1961,6 +1952,7 @@ async function _submitDeposit(){
   const mobile=document.getElementById('dep-mobile').value.trim();
   const txid=document.getElementById('dep-txid').value.trim();
   const m=document.getElementById('dep-msg');
+  if(!method)return _msgEl(m,'পেমেন্ট পদ্ধতি বেছে নিন','er');
   if(!amount||amount<100)return _msgEl(m,'কমপক্ষে ১০০ টাকা দিন','er');
   if(!mobile||mobile.length<11)return _msgEl(m,'সঠিক মোবাইল নম্বর দিন','er');
   if(!txid)return _msgEl(m,'ট্রানজেকশন আইডি দিন','er');

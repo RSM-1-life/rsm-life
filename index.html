@@ -28,6 +28,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .page.active{display:block}
 #page-login{display:flex;flex-direction:column}
 #page-login.active{display:flex}
+/* Hide sidebar/overlay/bottom-nav when login page is active */
+body.on-login .bottom-nav,
+body.on-login .sidebar,
+body.on-login #overlay,
+body.on-login #notif-drawer{display:none!important;pointer-events:none!important;}
 
 /* ── COMMON ── */
 .screen{display:none}.screen.active{display:flex;align-items:flex-start;justify-content:center;min-height:100vh;padding:24px 16px}
@@ -884,13 +889,13 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
    ⚙️ FIREBASE CONFIG
 ══════════════════════════════════════ */
 const _fc = {
-  apiKey:            "AIzaSyA1Uc5PxzGHiESWLigGLkZ1o1TZtiLPqJB",
+  apiKey:            "AIzaSyA1Uc5PxzGHiESWlIgGlK2lo1TZtilPqJ0",
   authDomain:        "rsm-life-b6cd5.firebaseapp.com",
   projectId:         "rsm-life-b6cd5",
   storageBucket:     "rsm-life-b6cd5.firebasestorage.app",
-  messagingSenderId: "931852106063",
-  appId:             "1:931852106063:web:86cdb8b38b41c96ba9853a",
-  measurementId:     "G-CQKMQCDWBS"
+  messagingSenderId: "951852106063",
+  appId:             "1:951852106063:web:06cdb8b30b41c96ba9853a",
+  measurementId:     "G-CQKWQCDWBS"
 };
 firebase.initializeApp(_fc);
 const _auth = firebase.auth();
@@ -944,6 +949,12 @@ function _showPage(page) {
   if (el) {
     el.classList.add('active');
     el.style.display = (page === 'login') ? 'flex' : 'block';
+  }
+  // Hide/show nav elements based on page
+  if(page === 'login'){
+    document.body.classList.add('on-login');
+  } else {
+    document.body.classList.remove('on-login');
   }
 }
 

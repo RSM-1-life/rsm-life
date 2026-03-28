@@ -307,6 +307,8 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
       <option value="pending">pending — পেন্ডিং</option>
     </select>
     <button class="btn btn-amber" onclick="_saveEdit()">💾 সংরক্ষণ করুন</button>
+    <div class="divider"></div>
+    <button class="btn btn-red" onclick="_deleteUser()">🗑️ এই অ্যাকাউন্ট ডিলিট করুন</button>
   </div>
 </div>
 
@@ -472,6 +474,7 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
       </div>
     </div>
     <button class="btn btn-amber" style="margin-bottom:0" onclick="_openWdModal()">💸 উত্তোলন করুন</button>
+    <button class="btn btn-blue" style="margin-top:8px;margin-bottom:0" onclick="_navTo('deposit')">💳 ডিপোজিট করুন</button>
   </div>
   <div class="page-body" style="padding-top:0">
     <!-- STATS -->
@@ -1720,6 +1723,34 @@ async function _saveEdit(){
     document.getElementById('ad-active').textContent=active;
     document.getElementById('ad-pending').textContent=pending;
     setTimeout(_closeEdit,1200);
+  }catch(e){_msgEl(m,'সমস্যা: '+e.message,'er');}
+}
+
+async function _deleteUser(){
+  const uid=document.getElementById('edit-uid').value;
+  const name=document.getElementById('edit-name').value||'এই ইউজার';
+  if(!uid)return;
+  if(!confirm(`⚠️ "${name}" এর অ্যাকাউন্ট স্থায়ীভাবে ডিলিট করবেন?\n\nএই কাজ আর ফেরানো যাবে না!`))return;
+  const m=document.getElementById('edit-msg');
+  _msgEl(m,'ডিলিট হচ্ছে...','ok');
+  try{
+    // Delete subcollections
+    const cols=['activity','notifications'];
+    for(const col of cols){
+      const snap=await _db.collection('users').doc(uid).collection(col).get();
+      const batch=_db.batch();
+      snap.docs.forEach(d=>batch.delete(d.ref));
+      if(!snap.empty)await batch.commit();
+    }
+    // Delete user document
+    await _db.collection('users').doc(uid).delete();
+    // Remove from local list
+    const idx=_allUsers.findIndex(u=>u.uid===uid);
+    if(idx>=0)_allUsers.splice(idx,1);
+    _renderUsers(_allUsers);
+    document.getElementById('ad-total').textContent=_allUsers.length;
+    _toast('🗑️ অ্যাকাউন্ট ডিলিট হয়েছে!');
+    _closeEdit();
   }catch(e){_msgEl(m,'সমস্যা: '+e.message,'er');}
 }
 

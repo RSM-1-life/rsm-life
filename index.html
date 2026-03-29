@@ -571,10 +571,10 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
   <div class="page-body" style="padding-top:0">
     <!-- STATS -->
     <div class="stat-grid">
-      <div class="stat-box"><div class="stat-val" style="color:#A78BFA" id="st-pts">০</div><div class="stat-lbl">পয়েন্ট</div></div>
-      <div class="stat-box"><div class="stat-val" style="color:#34D399" id="st-days">০</div><div class="stat-lbl">সক্রিয় দিন</div></div>
-      <div class="stat-box"><div class="stat-val" style="color:#FBBF24" id="st-ach">০</div><div class="stat-lbl">অর্জন</div></div>
-      <div class="stat-box"><div class="stat-val" style="color:#60A5FA" id="st-rank">—</div><div class="stat-lbl">র‍্যাংক</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:#34D399" id="st-l1">—</div><div class="stat-lbl">🥇 L1 কমিশন</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:#60A5FA" id="st-l2">—</div><div class="stat-lbl">🥈 L2 কমিশন</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:#A78BFA" id="st-l3">—</div><div class="stat-lbl">🥉 L3 কমিশন</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:#F472B6" id="st-l4">—</div><div class="stat-lbl">4️⃣ L4 কমিশন</div></div>
     </div>
     <!-- REFERRAL -->
     <div class="ref-box">
@@ -587,9 +587,9 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
       <button class="copy-btn" style="width:100%;padding:11px;border-radius:12px;font-size:13px" onclick="_copyRef()">📋 কোড কপি করুন</button>
       <input id="ref-link-val" style="display:none" readonly/>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
-        <button class="share-btn share-fb" onclick="_toast('⏳ খুব শীঘ্রই আসছে!')"><span>📘</span>Facebook</button>
-        <button class="share-btn share-wa" onclick="_toast('⏳ খুব শীঘ্রই আসছে!')"><span>💬</span>WhatsApp</button>
-        <button class="share-btn share-tg" onclick="_toast('⏳ খুব শীঘ্রই আসছে!')"><span>✈️</span>Telegram</button>
+        <button class="share-btn share-fb" onclick="_shareFb()"><span>📘</span>Facebook</button>
+        <button class="share-btn share-wa" onclick="_shareWa()"><span>💬</span>WhatsApp</button>
+        <button class="share-btn share-tg" onclick="_shareTg()"><span>✈️</span>Telegram</button>
       </div>
     </div>
     <!-- LIVE CHAT -->
@@ -613,6 +613,7 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
     <button class="bnav-item active" onclick="_navTo('home')"><span class="bnav-icon">🏠</span>হোম</button>
     <button class="bnav-item" onclick="_navTo('deposit')"><span class="bnav-icon">💳</span>ডিপোজিট</button>
     <button class="bnav-item" onclick="_navTo('profile')"><span class="bnav-icon">👤</span>প্রোফাইল</button>
+    <button class="bnav-item" id="bnav-admin-btn" style="display:none" onclick="_navTo('admin')"><span class="bnav-icon">🛡️</span>অ্যাডমিন</button>
   </div>
 </div><!-- /page-home -->
 
@@ -884,6 +885,7 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
     <button class="bnav-item" onclick="_navTo('home')"><span class="bnav-icon">🏠</span>হোম</button>
     <button class="bnav-item active" onclick="_navTo('deposit')"><span class="bnav-icon">💳</span>ডিপোজিট</button>
     <button class="bnav-item" onclick="_navTo('profile')"><span class="bnav-icon">👤</span>প্রোফাইল</button>
+    <button class="bnav-item" id="bnav-admin-btn2" style="display:none" onclick="_navTo('admin')"><span class="bnav-icon">🛡️</span>অ্যাডমিন</button>
   </div>
 </div>
 
@@ -957,6 +959,15 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
       <label>🔵 রকেট নম্বর</label>
       <input type="tel" id="cfg-rocket" placeholder="রকেট নম্বর"/>
       <button class="btn btn-amber" onclick="_savePayNums()">💾 নম্বর সংরক্ষণ করুন</button>
+    </div>
+    <div class="admin-card">
+      <div class="admin-title">📢 শেয়ার টেক্সট ও লিংক সেটিং</div>
+      <div id="share-msg" class="msg"></div>
+      <label>শেয়ার মেসেজ</label>
+      <textarea id="cfg-share-text" rows="6" placeholder="শেয়ার মেসেজ লিখুন..."></textarea>
+      <label>ডাউনলোড লিংক</label>
+      <input type="url" id="cfg-share-link" placeholder="https://example.com/app"/>
+      <button class="btn btn-amber" onclick="_saveShareSettings()">💾 শেয়ার সেটিং সংরক্ষণ করুন</button>
     </div>
     <div class="admin-card">
       <div class="admin-title">💳 ডিপোজিট অনুরোধ</div>
@@ -1034,7 +1045,7 @@ function _navTo(page) {
     b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+page+"'"));
   });
   // Load page data
-  if(page === 'home')       _renderUser();
+  if(page === 'home')       {_renderUser();_loadShareSettings();}
   if(page === 'withdraw')   _renderWithdrawals();
   if(page === 'commission') _renderCommission();
   if(page === 'tree')       _renderTree();
@@ -1127,11 +1138,15 @@ function _renderUser() {
   document.getElementById('h-commission').textContent = `৳${(_ud.commission||0).toLocaleString()}`;
   document.getElementById('h-totalearned').textContent= `৳${(_ud.totalEarned||0).toLocaleString()}`;
   document.getElementById('h-refercount').textContent = `${_ud.referralCount||0}/${_maxRef}`;
-  document.getElementById('st-pts').textContent  = _ud.points ?? 0;
-  document.getElementById('st-days').textContent = _ud.activeDays ?? 0;
-  document.getElementById('st-ach').textContent  = _ud.achievements ?? 0;
-  document.getElementById('st-rank').textContent = _ud.rank ?? '—';
+  // L1/L2/L3/L4 কমিশন রেট Firebase থেকে লোড করো
+  _loadCommissionRates();
   document.getElementById('sb-role-tag').textContent = _ud.role==='admin'?'🛡️ অ্যাডমিন':'👤 সাধারণ ইউজার';
+  // অ্যাডমিন বাটন শুধু অ্যাডমিনের জন্য
+  const isAdmin=_ud.role==='admin';
+  ['bnav-admin-btn','bnav-admin-btn2'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.display=isAdmin?'flex':'none';
+  });
   const slots = Math.max(0, _maxRef - (_ud.referralCount||0));
   document.getElementById('ref-slots').textContent = slots;
   const code = _ud.referCode || (_ud.username||'').toUpperCase() || '';
@@ -1140,6 +1155,21 @@ function _renderUser() {
   const codeBig=document.getElementById('ref-code-big');if(codeBig)codeBig.textContent=code;
   const bdEl = document.getElementById('wd-bal-show'); if(bdEl) bdEl.textContent = `৳ ${(_ud.balance||0).toLocaleString()}`;
   _renderActivity();
+}
+
+async function _loadCommissionRates(){
+  try{
+    const snap=await _db.collection('config').doc('commission').get();
+    let rates=[25,50,1.5,1.5];
+    if(snap.exists){const d=snap.data();if(d.rates&&d.rates.length>=4)rates=d.rates;}
+    const ids=['st-l1','st-l2','st-l3','st-l4'];
+    ids.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=`${rates[i]}%`;});
+  }catch(e){
+    ['st-l1','st-l2','st-l3','st-l4'].forEach((id,i)=>{
+      const el=document.getElementById(id);
+      if(el)el.textContent=['25%','50%','1.5%','1.5%'][i];
+    });
+  }
 }
 
 /* ══════════════════════════════════════
@@ -1676,9 +1706,31 @@ async function _renderHistory(){
 
 /* ══ SOCIAL SHARE ══ */
 function _getLink(){return document.getElementById('ref-link-val').value;}
-function _shareFb(){window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(_getLink())}`,'_blank');}
-function _shareWa(){window.open(`https://wa.me/?text=${encodeURIComponent('RSM LIFE-এ যোগ দিন! '+_getLink())}`,'_blank');}
-function _shareTg(){window.open(`https://t.me/share/url?url=${encodeURIComponent(_getLink())}&text=${encodeURIComponent('RSM LIFE-এ যোগ দিন!')}`,'_blank');}
+
+// শেয়ার টেক্সট ও লিংক Firebase থেকে আনো
+let _shareText = `🌟 RSM LIFE - স্মার্ট আর্নিং প্ল্যাটফর্ম! 🌟
+
+💰 রেফার করুন, আয় করুন!
+✅ L1 কমিশন: ২৫%
+✅ L2 কমিশন: ৫০%
+✅ সদস্য হলেই শুরু হবে আয়
+
+🚀 এখনই যোগ দিন এবং প্রতিদিন আয় করুন!
+👇 নিচের লিংকে ক্লিক করে ডাউনলোড করুন:`;
+let _shareLink = 'https://nobokhan.github.io/website/';
+
+function _getShareMsg(){return _shareText+'\n\n'+_shareLink;}
+
+function _shareFb(){
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(_shareLink)}&quote=${encodeURIComponent(_shareText)}`,'_blank');
+}
+function _shareWa(){
+  window.open(`https://wa.me/?text=${encodeURIComponent(_getShareMsg())}`,'_blank');
+}
+function _shareTg(){
+  const msg=_getShareMsg();
+  window.open(`https://t.me/share/url?url=${encodeURIComponent(_shareLink)}&text=${encodeURIComponent(_shareText)}`,'_blank');
+}
 function _copyRef(){
   navigator.clipboard.writeText(_getLink()).catch(()=>{document.getElementById('ref-link-val').select();document.execCommand('copy');});
   _toast('✅ রেফার লিংক কপি হয়েছে!');
@@ -1690,7 +1742,7 @@ function _copyRef(){
 async function _loadAll(){
   if(_ud?.role!=='admin'){_navTo('home');return;}
   document.getElementById('page-admin').style.display='block';
-  await Promise.all([_loadUsers(),_loadCfg(),_loadAdminBalance(),_loadWithdrawals(),_loadAdminDeposits(),_loadAdminChats(),_loadPayNums()]);
+  await Promise.all([_loadUsers(),_loadCfg(),_loadAdminBalance(),_loadWithdrawals(),_loadAdminDeposits(),_loadAdminChats(),_loadPayNums(),_loadShareSettings()]);
 }
 
 async function _loadUsers(){
@@ -2220,6 +2272,40 @@ async function _savePayNums(){
   try{
     await _db.collection('config').doc('paymentnumbers').set({bkash,nagad,rocket},{merge:true});
     _msgEl(m,'✅ নম্বর সংরক্ষিত হয়েছে!','ok');
+  }catch(e){_msgEl(m,'সমস্যা: '+e.message,'er');}
+}
+
+async function _loadShareSettings(){
+  try{
+    const snap=await _db.collection('config').doc('shareSettings').get();
+    if(snap.exists){
+      const d=snap.data();
+      if(d.text)_shareText=d.text;
+      if(d.link)_shareLink=d.link;
+      // অ্যাডমিন ফিল্ডে দেখাও
+      const tf=document.getElementById('cfg-share-text');
+      const lf=document.getElementById('cfg-share-link');
+      if(tf)tf.value=d.text||_shareText;
+      if(lf)lf.value=d.link||_shareLink;
+    } else {
+      const tf=document.getElementById('cfg-share-text');
+      const lf=document.getElementById('cfg-share-link');
+      if(tf)tf.value=_shareText;
+      if(lf)lf.value=_shareLink;
+    }
+  }catch(e){}
+}
+
+async function _saveShareSettings(){
+  const text=document.getElementById('cfg-share-text').value.trim();
+  const link=document.getElementById('cfg-share-link').value.trim();
+  const m=document.getElementById('share-msg');
+  if(!text)return _msgEl(m,'মেসেজ লিখুন','er');
+  if(!link)return _msgEl(m,'লিংক লিখুন','er');
+  try{
+    await _db.collection('config').doc('shareSettings').set({text,link},{merge:true});
+    _shareText=text;_shareLink=link;
+    _msgEl(m,'✅ শেয়ার সেটিং সংরক্ষিত হয়েছে!','ok');
   }catch(e){_msgEl(m,'সমস্যা: '+e.message,'er');}
 }
 

@@ -237,8 +237,98 @@ label{font-size:11px;color:#64748B;display:block;margin-bottom:5px;font-weight:6
 <body>
 
 <!-- ══════════════════════════════════════════════════════
-     GLOBAL ELEMENTS
+     SPLASH SCREEN
 ══════════════════════════════════════════════════════ -->
+<div id="splash-screen" style="
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(135deg,#060914 0%,#0b0f1f 50%,#060914 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .5s ease,visibility .5s ease;">
+
+  <!-- background glow -->
+  <div style="position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse 60% 40% at 50% 40%,rgba(59,130,246,.12) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 30% at 30% 70%,rgba(139,92,246,.08) 0%,transparent 60%)"></div>
+
+  <!-- Logo -->
+  <div style="position:relative;margin-bottom:24px">
+    <div style="
+      width:100px;height:100px;border-radius:28px;
+      background:linear-gradient(135deg,#1e3a5f,#2563EB,#06B6D4);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 0 40px rgba(59,130,246,.4),0 0 80px rgba(6,182,212,.2);
+      animation:splashPulse 2s ease-in-out infinite">
+      <div style="font-size:52px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))">🛡️</div>
+    </div>
+    <!-- ring -->
+    <div style="
+      position:absolute;inset:-8px;border-radius:36px;
+      border:2px solid rgba(59,130,246,.3);
+      animation:splashRing 2s ease-in-out infinite"></div>
+  </div>
+
+  <!-- App Name -->
+  <div style="
+    font-size:32px;font-weight:800;letter-spacing:3px;
+    background:linear-gradient(135deg,#FBBF24,#F59E0B,#FCD34D);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;margin-bottom:6px;
+    font-family:'Sora',sans-serif">RSM LIFE</div>
+
+  <!-- Tagline -->
+  <div style="font-size:12px;color:#475569;font-weight:600;letter-spacing:2px;
+    text-transform:uppercase;margin-bottom:40px">Smart Earning Platform</div>
+
+  <!-- Loading bar -->
+  <div style="width:160px;height:3px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden">
+    <div id="splash-bar" style="
+      height:100%;width:0%;border-radius:10px;
+      background:linear-gradient(90deg,#3B82F6,#06B6D4,#8B5CF6);
+      animation:splashLoad 2s ease forwards"></div>
+  </div>
+
+  <!-- Loading text -->
+  <div style="margin-top:14px;font-size:11px;color:#334155;font-weight:600;
+    letter-spacing:.5px" id="splash-txt">লোড হচ্ছে...</div>
+</div>
+
+<style>
+@keyframes splashPulse{0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(59,130,246,.4),0 0 80px rgba(6,182,212,.2)}50%{transform:scale(1.05);box-shadow:0 0 60px rgba(59,130,246,.6),0 0 100px rgba(6,182,212,.3)}}
+@keyframes splashRing{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.08);opacity:.7}}
+@keyframes splashLoad{0%{width:0%}60%{width:75%}90%{width:92%}100%{width:100%}}
+@keyframes splashFadeOut{to{opacity:0;visibility:hidden}}
+</style>
+
+<script>
+(function(){
+  // splash text animation
+  const texts=['লোড হচ্ছে...','Firebase সংযুক্ত হচ্ছে...','প্রস্তুত হচ্ছে...'];
+  let ti=0;
+  const txtEl=document.getElementById('splash-txt');
+  const tInterval=setInterval(()=>{ti=(ti+1)%texts.length;if(txtEl)txtEl.textContent=texts[ti];},700);
+
+  // hide splash after page loads
+  function hideSplash(){
+    clearInterval(tInterval);
+    const sp=document.getElementById('splash-screen');
+    if(sp){
+      sp.style.opacity='0';
+      sp.style.visibility='hidden';
+      setTimeout(()=>{sp.remove();},600);
+    }
+  }
+
+  // minimum 2.5 seconds show, then hide when ready
+  const minTime=new Promise(r=>setTimeout(r,2500));
+  const loadTime=new Promise(r=>{
+    if(document.readyState==='complete')r();
+    else window.addEventListener('load',r);
+  });
+  Promise.all([minTime,loadTime]).then(hideSplash);
+})();
+</script>
+
+
 <div class="overlay" id="overlay" onclick="_closeAll()"></div>
 
 <!-- SIDEBAR (shared across home/profile/admin) -->
